@@ -8,10 +8,10 @@ namespace UsersManager_BAL.Contracts.Services
 {
     public interface IUserService
     {
-        public Task<AppUserOutputModel> GetUserByIdAsync(Guid id, CancellationToken cancellationToken = default);
-        public PagedList<AppUserOutputModel> GetAllUsers(CommonFilterModel<UserFilter> commonFilterModel);
-        public Task<AppUserOutputModel> AddUserAsync(IUserAddModel appUser, CancellationToken cancellationToken = default);
-        public Task<AppUserOutputModel> UpdateUserAsync(IUserUpdateModel appUser, CancellationToken cancellationToken = default);
+        public Task<UserOutputModel> GetUserByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        public PagedList<UserOutputModel> GetAllUsers(CommonFilterModel<UserFilter> commonFilterModel);
+        public Task<UserOutputModel> AddUserAsync(IUserAddModel user, CancellationToken cancellationToken = default);
+        public Task<UserOutputModel> UpdateUserAsync(IUserUpdateModel user, CancellationToken cancellationToken = default);
         public Task DeleteUserAsync(Guid id, CancellationToken cancellationToken = default);
     }
 }

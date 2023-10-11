@@ -16,9 +16,5 @@
   <ItemGroup>
     <ProjectReference Include="..\UsersManager_DAL\UsersManager_DAL.csproj" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="Helpers\" />
-  </ItemGroup>
 
 </Project>

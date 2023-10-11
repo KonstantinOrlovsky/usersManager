@@ -8,7 +8,6 @@ using UsersManager_BAL.Infrastructure.Search.Pagination;
 using UsersManager_BAL.Infrastructure.Search.Sorting;
 using UsersManager_BAL.Models;
 using UsersManager_BAL.Models.OutputModels;
-using UsersManager_DAL;
 using UsersManager_DAL.Contracts.Repositories;
 using UsersManager_DAL.Domain;
 using UsersManager_DAL.Domain.Filter;
@@ -31,7 +30,7 @@ namespace UsersManager_BAL.Services
             _logger = logger;
         }
 
-        public async Task<AppUserOutputModel> GetUserByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<UserOutputModel> GetUserByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var user = await _userRepository.GetUserWithRolesQuery()
                 .SingleOrDefaultAsync(u => Equals(u.Id, id), cancellationToken);
@@ -47,7 +46,7 @@ namespace UsersManager_BAL.Services
             return output;
         }
 
-        public PagedList<AppUserOutputModel> GetAllUsers(CommonFilterModel<UserFilter> commonFilterModel)
+        public PagedList<UserOutputModel> GetAllUsers(CommonFilterModel<UserFilter> commonFilterModel)
         {
             var users = _userRepository.FilterForList(commonFilterModel.SearchFilter)
                 .AsNoTracking()
@@ -66,7 +65,7 @@ namespace UsersManager_BAL.Services
             });
         }
 
-        public async Task<AppUserOutputModel> AddUserAsync(IUserAddModel inputModel, CancellationToken cancellationToken = default)
+        public async Task<UserOutputModel> AddUserAsync(IUserAddModel inputModel, CancellationToken cancellationToken = default)
         {
             if (await _userRepository.IsAlreadyExistUserWithCurrentEmail(inputModel.Email))
             {
@@ -104,7 +103,7 @@ namespace UsersManager_BAL.Services
             }
         }
 
-        public async Task<AppUserOutputModel> UpdateUserAsync(IUserUpdateModel inputModel, CancellationToken cancellationToken = default)
+        public async Task<UserOutputModel> UpdateUserAsync(IUserUpdateModel inputModel, CancellationToken cancellationToken = default)
         {
             if (await _userRepository.IsAlreadyExistUserWithCurrentEmail(inputModel.Email, inputModel.Id))
             {
@@ -125,17 +124,17 @@ namespace UsersManager_BAL.Services
             {
                 user.Name = inputModel.Name;
                 user.Age = inputModel.Age;
-                user.PasswordHash = inputModel.Password;
                 user.Email = inputModel.Email;
 
                 _unitOfWork.Repository<IUserRoleRepository>()
                     .RemoveRangeWithoutSave(user.UserRoles);
 
-                user.UserRoles = roles.Select(r => new UserRole
-                {
-                    RoleId = r.Id,
-                    UserId = inputModel.Id
-                }).ToList();
+                _unitOfWork.Repository<IUserRoleRepository>()
+                    .AddRangeWithoutSave(roles.Select(r => new UserRole
+                    {
+                        RoleId = r.Id,
+                        UserId = inputModel.Id
+                    }).ToList());
 
                 _userRepository.Update(user);
                 await _unitOfWork.SaveChangesAsync();

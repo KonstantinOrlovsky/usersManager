@@ -2,7 +2,7 @@
 
 namespace UsersManager_BAL.Models.InputModels
 {
-    public class AppUserUpdateModel : AppUserModel, IUserUpdateModel
+    public class UserUpdateModel : UserModel, IUserUpdateModel
     {
     }
 }

@@ -3,7 +3,7 @@ using UsersManager_DAL.Domain.Enums;
 
 namespace UsersManager_BAL.Models.OutputModels
 {
-    public class AppUserOutputModel : AppUserModel, IUserOutputModel
+    public class UserOutputModel : UserModel, IUserOutputModel
     {
         public void SetEnumRoles(IEnumerable<UsersManager_DAL.Domain.Role> roles)
         {

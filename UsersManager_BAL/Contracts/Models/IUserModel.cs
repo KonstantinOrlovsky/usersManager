@@ -6,7 +6,6 @@ namespace UsersManager_BAL.Contracts.Models
     {
         Guid Id { get; set; }
         string Name { get; set; }
-        string Password { get; set; }
         int Age { get; set; }
         string Email { get; set; }
         Role[]? Roles { get; set; }

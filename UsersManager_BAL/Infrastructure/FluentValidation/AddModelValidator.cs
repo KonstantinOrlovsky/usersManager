@@ -3,9 +3,9 @@ using UsersManager_BAL.Models.InputModels;
 
 namespace UsersManager_BAL.Infrastructure.FluentValidation
 {
-    public class AppUserAddModelValidator : AbstractValidator<AppUserAddModel>
+    public class AddModelValidator : AbstractValidator<UserAddModel>
     {
-        public AppUserAddModelValidator()
+        public AddModelValidator()
         {
             RuleFor(user => user.Name).Length(5, 70);
             RuleFor(user => user.Password).MaximumLength(50);
