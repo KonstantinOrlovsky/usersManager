@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UsersManager.Commons;
 using UsersManager_BAL.Contracts.Services;
@@ -8,18 +9,19 @@ using UsersManager_DAL.Domain.Filter;
 
 namespace UsersManager.Controllers
 {
-    [ApiController]
     [Route("[controller]")]
-    public class UserController : ControllerBase
+    [ApiController]
+    [Authorize]
+    public class UserController : Controller
     {
         private readonly IUserService _appUserService;
-        private IValidator<AppUserAddModel> _addModelValidator;
-        private IValidator<AppUserUpdateModel> _updateModelValidator;
+        private IValidator<UserAddModel> _addModelValidator;
+        private IValidator<UserUpdateModel> _updateModelValidator;
 
         public UserController(
             IUserService appUserService, 
-            IValidator<AppUserAddModel> addModelValidator,
-            IValidator<AppUserUpdateModel> updateModelValidator)
+            IValidator<UserAddModel> addModelValidator,
+            IValidator<UserUpdateModel> updateModelValidator)
         {
             _appUserService = appUserService;
             _addModelValidator = addModelValidator;
@@ -44,7 +46,7 @@ namespace UsersManager.Controllers
         }
 
         [HttpPost]
-        public async Task<GenericResponse> AddUser([FromBody] AppUserAddModel model)
+        public async Task<GenericResponse> AddUser([FromBody] UserAddModel model)
         {
             _addModelValidator.ValidateAndThrow(model);
 
@@ -54,7 +56,7 @@ namespace UsersManager.Controllers
         }
 
         [HttpPut]
-        public async Task<GenericResponse> UpdateUser([FromBody] AppUserUpdateModel model)
+        public async Task<GenericResponse> UpdateUser([FromBody] UserUpdateModel model)
         {
             _updateModelValidator.ValidateAndThrow(model);
 

@@ -3,9 +3,9 @@ using UsersManager_BAL.Infrastructure.Search.Sorting;
 
 namespace UsersManager_BAL.Models
 {
-    public class CommonFilterModel<T> where T : new()
+    public class CommonFilterModel<TEntity> where TEntity : new()
     {
-        public T SearchFilter { get; set; } = new T();
+        public TEntity SearchFilter { get; set; } = new TEntity();
         public PagedListFilter Filter { get; set; } = new PagedListFilter();
         public SortedBy SortingBy { get; set; } = new SortedBy();
     }
