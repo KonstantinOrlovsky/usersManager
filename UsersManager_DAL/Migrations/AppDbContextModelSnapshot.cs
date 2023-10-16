@@ -51,7 +51,8 @@ namespace UsersManager_DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("RefreshToken");
                 });
@@ -143,8 +144,8 @@ namespace UsersManager_DAL.Migrations
             modelBuilder.Entity("UsersManager_DAL.Domain.RefreshToken", b =>
                 {
                     b.HasOne("UsersManager_DAL.Domain.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithOne("RefreshToken")
+                        .HasForeignKey("UsersManager_DAL.Domain.RefreshToken", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -177,6 +178,9 @@ namespace UsersManager_DAL.Migrations
 
             modelBuilder.Entity("UsersManager_DAL.Domain.User", b =>
                 {
+                    b.Navigation("RefreshToken")
+                        .IsRequired();
+
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618

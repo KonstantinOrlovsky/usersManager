@@ -13,6 +13,10 @@ namespace UsersManager_DAL.Context.CodeFirst.EntityConfigurations
                 .HasForeignKey(ur => ur.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasOne(u => u.RefreshToken)
+                .WithOne(rt => rt.User)
+                .HasForeignKey<RefreshToken>(rt => rt.UserId);
+
             builder.Property(p => p.Id)
                 .HasMaxLength(50)
                 .IsRequired();

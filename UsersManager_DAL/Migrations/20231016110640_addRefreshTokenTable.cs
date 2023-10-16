@@ -11,6 +11,10 @@ namespace UsersManager_DAL.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_UserRole_User_UserId",
+                table: "UserRole");
+
             migrationBuilder.CreateTable(
                 name: "RefreshToken",
                 columns: table => new
@@ -30,20 +34,41 @@ namespace UsersManager_DAL.Migrations
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshToken_UserId",
                 table: "RefreshToken",
-                column: "UserId");
+                column: "UserId",
+                unique: true);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_UserRole_User_UserId",
+                table: "UserRole",
+                column: "UserId",
+                principalTable: "User",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_UserRole_User_UserId",
+                table: "UserRole");
+
             migrationBuilder.DropTable(
                 name: "RefreshToken");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_UserRole_User_UserId",
+                table: "UserRole",
+                column: "UserId",
+                principalTable: "User",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
     }
 }

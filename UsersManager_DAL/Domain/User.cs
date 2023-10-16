@@ -8,6 +8,7 @@
         public int Age { get; set; }
         public string Email { get; set; }
 
+        public RefreshToken RefreshToken { get; set; }
         public ICollection<UserRole> UserRoles { get; set; } = new HashSet<UserRole>();
     }
 }
