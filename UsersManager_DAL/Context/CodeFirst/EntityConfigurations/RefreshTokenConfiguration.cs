@@ -20,6 +20,10 @@ namespace UsersManager_DAL.Context.CodeFirst.EntityConfigurations
 
             builder.Property(p => p.ExpiredDate)
                 .IsRequired();
+
+            builder.HasOne(rt => rt.User)
+                .WithMany()
+                .HasForeignKey(rt => rt.UserId);
         }
     }
 }
