@@ -1,6 +1,5 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -10,6 +9,7 @@ using UsersManager.Middlewares;
 using UsersManager_BAL;
 using UsersManager_BAL.Contracts.Services;
 using UsersManager_BAL.Infrastructure.FluentValidation;
+using UsersManager_BAL.Models;
 using UsersManager_BAL.Models.InputModels;
 using UsersManager_BAL.Services;
 using UsersManager_DAL.Context;
@@ -34,8 +34,9 @@ builder.Services.AddTransient<IAppUserService, AppUserService>();
 builder.Services.AddTransient<IAuthenticationService, JwtBearerAuthenticationService>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
-builder.Services.AddScoped<IValidator<UserAddModel>, AddModelValidator>();
-builder.Services.AddScoped<IValidator<UserUpdateModel>, AppUserUpdateModelValidator>();
+builder.Services.AddScoped<IValidator<UserAddModel>, UserAddModelValidator>();
+builder.Services.AddScoped<IValidator<UserUpdateModel>, UserUpdateModelValidator>();
+builder.Services.AddScoped<IValidator<RegisterModel>, RegisterModelValidator>();
 
 #region Swagger Configuration
 builder.Services.AddSwaggerGen(swagger => {
