@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Data;
+using System.Linq;
 using UsersManager_BAL.Contracts.Models.InputModels;
 using UsersManager_BAL.Contracts.Services;
 using UsersManager_BAL.Infrastructure.Mapper;
@@ -11,6 +12,7 @@ using UsersManager_BAL.Models.OutputModels;
 using UsersManager_DAL.Contracts.Repositories;
 using UsersManager_DAL.Domain;
 using UsersManager_DAL.Domain.Filter;
+using UsersManager_DAL.Helpers;
 
 namespace UsersManager_BAL.Services
 {
@@ -91,7 +93,7 @@ namespace UsersManager_BAL.Services
                 await _userRepository.AddAsync(user, cancellationToken);
                 await _userRepository.SaveChangesAsync(cancellationToken);
 
-                var output =  UserMapper.MapAppUserToAppUserOutputModel(user);
+                var output = UserMapper.MapAppUserToAppUserOutputModel(user);
                 output.SetEnumRoles(roles);
 
                 return output;
@@ -117,24 +119,26 @@ namespace UsersManager_BAL.Services
             {
                 throw new ArgumentException(Constants.NotFoundEntityByIdErrorMessage);
             }
-            
+
             var roles = await _unitOfWork.Repository<IRoleRepository>()
                         .GetRolesByEnumName(inputModel.Roles);
+
             try
             {
                 user.Name = inputModel.Name;
                 user.Age = inputModel.Age;
                 user.Email = inputModel.Email;
 
-                _unitOfWork.Repository<IUserRoleRepository>()
-                    .RemoveRangeWithoutSave(user.UserRoles);
-
-                _unitOfWork.Repository<IUserRoleRepository>()
-                    .AddRangeWithoutSave(roles.Select(r => new UserRole
+                await MergeHelper.MergeCollection(
+                    roles,
+                    user.UserRoles,
+                    _unitOfWork.Repository<IUserRoleRepository>(),
+                    (role, userRole) => role.Id == userRole.RoleId,
+                    (role, userRole) =>
                     {
-                        RoleId = r.Id,
-                        UserId = inputModel.Id
-                    }).ToList());
+                        userRole.RoleId = role.Id;
+                        userRole.UserId = inputModel.Id;
+                    });
 
                 _userRepository.Update(user);
                 await _unitOfWork.SaveChangesAsync();
@@ -173,5 +177,6 @@ namespace UsersManager_BAL.Services
                 throw;
             }
         }
+
     }
 }
