@@ -1,21 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using UsersManager_BAL.Contracts.Models.Authentication;
 using UsersManager_BAL.Contracts.Services;
+using UsersManager_BAL.Infrastructure.Mapper;
 using UsersManager_BAL.Models;
 using UsersManager_BAL.Models.Authentication.Security;
 using UsersManager_DAL.Contracts.Repositories;
-
 namespace UsersManager_BAL.Services
 {
     public class AppUserService : IAppUserService
     {
         private readonly IUserRepository _userRepository;
         private readonly IAuthenticationService _authenticationService;
+        private readonly IUserService _userService;
 
-        public AppUserService(IUserRepository userRepository, IAuthenticationService authenticationService)
+        public AppUserService(IUserRepository userRepository, IAuthenticationService authenticationService, IUserService userService)
         {
             _userRepository = userRepository;
             _authenticationService = authenticationService;
+            _userService = userService;
         }
 
         public async Task<IAppUser> LoginAsync(LoginModel inputModel, CancellationToken cancellationToken = default)
@@ -52,6 +54,15 @@ namespace UsersManager_BAL.Services
             }
 
             return await _authenticationService.RefreshTokenAsync(userId, inputModel.RefreshToken, cancellationToken);
+        }
+
+        public async Task<RegisterModel> RegisterAsync(RegisterModel inputModel, CancellationToken cancellationToken = default)
+        {
+            var user = UserMapper.MapRegisterModelToUserAddModel(inputModel);
+
+            await _userService.AddUserAsync(user, cancellationToken);
+
+            return inputModel;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UsersManager.Commons;
 using UsersManager_BAL.Contracts.Services;
@@ -16,6 +17,16 @@ namespace UsersManager.Controllers
             IAppUserService appUserService)
         {
             _appUserService = appUserService;
+        }
+
+        [AllowAnonymous]
+        [HttpPost("Register")]
+        public async Task<GenericResponse> RegisterAsync([FromBody] RegisterModel model, IValidator<RegisterModel> validator)
+        {
+
+            var output = await _appUserService.RegisterAsync(model);
+
+            return new GenericResponse(output);
         }
 
         [AllowAnonymous]

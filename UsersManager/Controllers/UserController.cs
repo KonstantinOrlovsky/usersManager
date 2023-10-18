@@ -15,17 +15,10 @@ namespace UsersManager.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _appUserService;
-        private IValidator<UserAddModel> _addModelValidator;
-        private IValidator<UserUpdateModel> _updateModelValidator;
 
-        public UserController(
-            IUserService appUserService, 
-            IValidator<UserAddModel> addModelValidator,
-            IValidator<UserUpdateModel> updateModelValidator)
+        public UserController(IUserService appUserService)
         {
             _appUserService = appUserService;
-            _addModelValidator = addModelValidator;
-            _updateModelValidator = updateModelValidator;
         }
 
         [Route("{id}"), HttpGet]
@@ -46,9 +39,9 @@ namespace UsersManager.Controllers
         }
 
         [HttpPost]
-        public async Task<GenericResponse> AddUser([FromBody] UserAddModel model)
+        public async Task<GenericResponse> AddUser([FromBody] UserAddModel model, IValidator<UserAddModel> validator)
         {
-            _addModelValidator.ValidateAndThrow(model);
+            validator.ValidateAndThrow(model);
 
             var output = await _appUserService.AddUserAsync(model);
 
@@ -56,9 +49,9 @@ namespace UsersManager.Controllers
         }
 
         [HttpPut]
-        public async Task<GenericResponse> UpdateUser([FromBody] UserUpdateModel model)
+        public async Task<GenericResponse> UpdateUser([FromBody] UserUpdateModel model, IValidator<UserUpdateModel> validator)
         {
-            _updateModelValidator.ValidateAndThrow(model);
+            validator.ValidateAndThrow(model);
 
             var output = await _appUserService.UpdateUserAsync(model);
 

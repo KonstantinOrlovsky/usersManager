@@ -12,8 +12,8 @@ using UsersManager_DAL.Context;
 namespace UsersManager_DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231010163523_addRefreshTokenTable")]
-    partial class addRefreshTokenTable
+    [Migration("20231018150409_fixRefreshTokenConfiguration")]
+    partial class fixRefreshTokenConfiguration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -165,7 +165,7 @@ namespace UsersManager_DAL.Migrations
                     b.HasOne("UsersManager_DAL.Domain.User", "User")
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Role");

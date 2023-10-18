@@ -1,16 +1,16 @@
 ﻿using FluentValidation;
-using UsersManager_BAL.Models.InputModels;
+using UsersManager_BAL.Models;
 
 namespace UsersManager_BAL.Infrastructure.FluentValidation
 {
-    public class AddModelValidator : AbstractValidator<UserAddModel>
+    public class RegisterModelValidator : AbstractValidator<RegisterModel>
     {
-        public AddModelValidator()
+        public RegisterModelValidator()
         {
             RuleFor(user => user.Name).Length(5, 70);
+            RuleFor(user => user.ConfirmPassword).Length(5, 70).Equal(user => user.Password);
             RuleFor(user => user.Password).MaximumLength(50);
             RuleFor(user => user.Email).NotEmpty().EmailAddress();
-            RuleFor(user => user.Age).InclusiveBetween(1, 150);
         }
     }
 }

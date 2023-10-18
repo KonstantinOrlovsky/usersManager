@@ -11,16 +11,19 @@ namespace UsersManager_DAL.Context.CodeFirst.EntityConfigurations
             builder.Property(p => p.Value)
                 .HasMaxLength(100)
                 .IsRequired();
+
             builder.Property(p => p.IsUsed)
                 .HasDefaultValue(false);
+
             builder.Property(p => p.CreatedDate)
                 .HasDefaultValueSql("getdate()");
+
             builder.Property(p => p.ExpiredDate)
                 .IsRequired();
+
             builder.HasOne(rt => rt.User)
                 .WithMany()
-                .HasForeignKey(rt => rt.UserId)
-                .IsRequired();
+                .HasForeignKey(rt => rt.UserId);
         }
     }
 }

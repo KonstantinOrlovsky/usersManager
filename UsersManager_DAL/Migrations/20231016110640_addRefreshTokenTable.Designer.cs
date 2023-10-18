@@ -12,8 +12,8 @@ using UsersManager_DAL.Context;
 namespace UsersManager_DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231010220947_addCascadeDeleteToUserConfiguration")]
-    partial class addCascadeDeleteToUserConfiguration
+    [Migration("20231016110640_addRefreshTokenTable")]
+    partial class addRefreshTokenTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,7 +54,8 @@ namespace UsersManager_DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("RefreshToken");
                 });
@@ -146,8 +147,8 @@ namespace UsersManager_DAL.Migrations
             modelBuilder.Entity("UsersManager_DAL.Domain.RefreshToken", b =>
                 {
                     b.HasOne("UsersManager_DAL.Domain.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithOne("RefreshToken")
+                        .HasForeignKey("UsersManager_DAL.Domain.RefreshToken", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -180,6 +181,9 @@ namespace UsersManager_DAL.Migrations
 
             modelBuilder.Entity("UsersManager_DAL.Domain.User", b =>
                 {
+                    b.Navigation("RefreshToken")
+                        .IsRequired();
+
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
